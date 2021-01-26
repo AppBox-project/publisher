@@ -1,0 +1,638 @@
+# Version logic
+versions:
+  - criteria:
+      variant: store
+    script: store-script
+
+# Install scripts
+## Store
+store-script:
+  - action: createModel
+    model: crm-products
+  - action: createModel
+    model: crm-orders
+  - action: createModel
+    model: crm-sales
+  - action: registerSystemValues
+    values:
+      people:
+        types:
+          - label: Customer
+            key: customer
+            withList: true
+            listName: Customers
+          - label: Supplier
+            key: supplier
+            withList: true
+            listName: Suppliers
+  - action: insertObjects
+  - action: installClient
+    folder: Client
+  - compile
+  - action: registerApp
+    info:
+      name: Store CRM
+      icon: FaCashRegister
+      color:
+        r: 4
+        g: 102
+        b: 201
+  - cleanUp
+
+# Data to load into the system
+data:
+  models:
+    # Base product model
+    crm-products:
+      permissions:
+        read:
+          - known
+        create:
+          - known
+        modifyOwn:
+          - known
+        write:
+          - known
+        delete:
+          - known
+        deleteOwn:
+          - known
+        archive:
+          - known
+        archiveOwn:
+          - known
+      name: Product
+      name_plural: Products
+      app: crm
+      icon: FaPeopleCarry
+      indexed: true
+      primary: name
+      fields:
+        name:
+          name: Name
+          required: true
+          type: input
+        description:
+          name: Description
+          required: true
+          type: richtext
+        quantity:
+          name: Quantity
+          type: input
+          typeArgs:
+            type: number
+          default: 1
+        picture:
+          name: Picture
+          type: picture
+          typeArgs:
+            asBanner: true
+        price:
+          name: Price
+          type: input
+          typeArgs:
+            type: number
+            numberType: currency
+        sold:
+          name: Sold
+          type: formula
+          typeArgs:
+            type: number
+            formula:
+              '{{ sum_of_fields(''crm-sales'', ''amount'', [{"field":"product","operator":"equals","value":
+              "__thisId"}]) }}'
+        available:
+          name: Available
+          type: formula
+          typeArgs:
+            formula: '{{ math("{quantity} - {sold}") }}'
+            type: number
+        in_stock:
+          name: In stock
+          type: formula
+          typeArgs:
+            type: boolean
+            formula: "{{ is_greater_than(available, 0) }}"
+      preview:
+        fields:
+          - name
+          - description
+          - available
+          - in_stock
+        enabled: true
+        picture: picture
+      handlers:
+        crm: "/crm/products/{object:_id}"
+      actions:
+        create:
+          layout: create
+          type: create
+      overviews:
+        default:
+          fields:
+            - picture
+            - name
+            - available
+            - in_stock
+          buttons:
+            - create
+          actions:
+            - delete
+      layouts:
+      create:
+        layout:
+          - type: Field
+            id: khuh2vow
+            field: name
+          - type: Field
+            id: khuh31km
+            field: description
+          - type: Field
+            id: khuh358c
+            field: quantity
+          - type: Field
+            id: khuh3dzt
+            field: price
+        buttons: []
+        default:
+          layout:
+            - type: AnimationContainer
+              id: khasxdr6
+              items:
+                - type: GridContainer
+                  id: khasxj8n
+                  items:
+                    - type: GridItem
+                      xs: 12
+                      id: khasxngg
+                      md: 9
+                      key: default
+                      items:
+                        - type: AnimationItem
+                          id: khasxum6
+                          items:
+                            - type: Paper
+                              id: khasxx1k
+                              title: Product
+                              withBigMargin: true
+                              items:
+                                - type: Field
+                                  id: khato1rq
+                                  field: name
+                                - type: Field
+                                  id: khato3q3
+                                  field: description
+                                - type: Field
+                                  id: khato4v9
+                                  field: quantity
+                                - type: Field
+                                  id: khato67v
+                                  field: picture
+                                  hideView: true
+                                - type: Field
+                                  id: khatok9q
+                                  field: price
+                    - type: GridItem
+                      xs: 12
+                      id: khasy8dc
+                      md: 3
+                      key: default
+                      withBigMargin: true
+                      title: Product
+                      items:
+                        - type: AnimationItem
+                          id: khasydf2
+                          items:
+                            - type: RelatedList
+                              id: khasymfk
+                              title: Sales
+                              object: crm-sales
+                              field: product
+                              displayfields: order,amount,total_price
+                              valueCopyFields: price=price
+                              onlyVisibleWithResults: false
+                              displayCard: true
+                              withBigMargin: true
+                              addButton: true
+                              key: default
+          buttons:
+            - delete
+            - clone
+            - archive
+          factsBar:
+            - picture
+            - name
+            - available
+            - sold
+            - in_stock
+      key: crm-products
+      lists:
+        in_stock:
+          name: In stock
+          filter:
+            - key: in_stock
+              operator: equals
+              value: true
+        sold_out:
+          name: Sold out
+          filter:
+            - key: in_stock
+              operator: equals
+              value: false
+    # Sales
+    crm-sales:
+      permissions:
+        read:
+          - known
+        create:
+          - known
+        modifyOwn:
+          - known
+        write:
+          - known
+        delete:
+          - known
+        deleteOwn:
+          - known
+        archive:
+          - known
+        archiveOwn:
+          - known
+      key: crm-sales
+      name: Sale
+      name_plural: Sales
+      primary: name
+      icon: FaShoppingCart
+      preview:
+        fields:
+          - name
+          - product
+          - order
+          - price
+        enabled: true
+      handlers:
+        crm: "/crm/sales/{object:_id}"
+      actions:
+        create:
+          layout: create
+          type: create
+      overviews:
+        default:
+          fields:
+            - name
+            - product
+            - order
+          buttons:
+            - create
+          actions:
+            - delete
+      layouts:
+        default:
+          layout:
+            - type: AnimationContainer
+              id: kf2r51ws
+              items:
+                - type: GridContainer
+                  id: kg6o8d15
+                  items:
+                    - type: GridItem
+                      xs: 12
+                      id: kg6o8fgk
+                      md: 9
+                      items:
+                        - type: AnimationItem
+                          id: kf2r5375
+                          items:
+                            - type: Paper
+                              id: kf2r56lv
+                              title: Sale
+                              withBigMargin: true
+                              key: default
+                              items:
+                                - type: Field
+                                  id: 3c5meakg285qlt
+                                  field: product
+                                - type: Field
+                                  id: 3c5meakg285qlu
+                                  field: order
+                                - type: Field
+                                  id: kg6mi8nq
+                                  field: price
+                                - type: Field
+                                  id: khm0hy3n
+                                  field: amount
+                                  key: total_price
+                                  name: Total price
+                    - type: GridItem
+                      xs: 12
+                      id: kg6o8nb4
+                      md: 3
+                      items:
+                        - type: AnimationItem
+                          id: kg6o9472
+                          items:
+                            - type: Paper
+                              id: kg6o986w
+                              title: Files
+                              withBigMargin: true
+                              md: 3
+                              items: []
+          buttons:
+            - delete
+          factsBar:
+            - name
+            - product
+            - amount
+            - total_price
+        create:
+          layout:
+            - type: Field
+              id: 3c5meakg285qlt
+              field: product
+            - type: Field
+              id: 3c5meakg285qlu
+              field: order
+            - type: Field
+              id: kg6mgjmi
+              field: price
+            - type: Field
+              id: khm0i6le
+              field: amount
+              key: total_price
+              name: Total price
+          buttons: []
+      fields:
+        name:
+          name: Name
+          type: auto_name
+          typeArgs:
+            prefix: SALE
+            mode: increment
+        product:
+          name: Product
+          type: relationship
+          required: true
+          typeArgs:
+            relationshipTo: crm-products
+        order:
+          name: Order
+          type: relationship
+          required: true
+          typeArgs:
+            relationshipTo: crm-orders
+        price:
+          name: Price
+          type: input
+          typeArgs:
+            type: number
+            numberType: currency
+        amount:
+          name: Amount
+          type: input
+          typeArgs:
+            type: number
+          default: "1"
+        total_price:
+          name: Total price
+          type: formula
+          typeArgs:
+            type: number
+            formula: '{{ math("{amount} * {price}") }}'
+      app: crm
+      indexed: false
+      rules:
+        stock:
+          name: Prevent understock
+          checkedOn: InsertAndUpdate
+          message: Not enough stock left to sell that many.
+          rule:
+            'is_greater_than(projected_sum_of_fields("crm-sales", "amount", [{"field":"product","operator":"equals","value":
+            "{product}"}]), product_r.quantity)'
+    crm-orders:
+      preview:
+        fields:
+          - name
+          - person
+          - total
+          - paid
+        enabled: true
+      permissions:
+        read:
+          - known
+        create:
+          - known
+        modifyOwn:
+          - known
+        write:
+          - known
+        delete:
+          - known
+        deleteOwn:
+          - known
+        archive:
+          - known
+        archiveOwn:
+          - known
+      key: crm-orders
+      name: Order
+      name_plural: Orders
+      primary: name
+      icon: FaFileInvoiceDollar
+      actions:
+        create:
+          layout: create
+          type: create
+      overviews:
+        default:
+          fields:
+            - name
+            - person
+            - date
+            - total
+            - paid
+          buttons:
+            - create
+          actions:
+            - delete
+      layouts:
+        default:
+          layout:
+            - type: AnimationContainer
+              id: kf2r51ws
+              items:
+                - type: GridContainer
+                  id: khm16wp4
+                  items:
+                    - type: GridItem
+                      xs: 12
+                      id: khm16ye6
+                      md: 9
+                      items:
+                        - type: AnimationItem
+                          id: khm17at4
+                          items:
+                            - type: Paper
+                              id: khm17ira
+                              title: Order
+                              hoverable: true
+                              withBigMargin: true
+                              items:
+                                - type: Field
+                                  id: khm1827w
+                                  field: person
+                                  title: Order
+                                  hoverable: true
+                                  withBigMargin: true
+                                - type: Field
+                                  id: khm187ru
+                                  field: paid
+                                  title: Order
+                                  hoverable: true
+                                  withBigMargin: true
+                                - type: Field
+                                  id: khnukggv
+                                  field: date
+                                  key: date
+                                  name: Date
+                    - type: GridItem
+                      xs: 12
+                      id: khm17498
+                      md: 3
+                      items:
+                        - type: AnimationItem
+                          id: khm17egq
+                          items:
+                            - type: RelatedList
+                              id: khm18o64
+                              title: Sales
+                              object: crm-sales
+                              field: order
+                              displayfields: product,amount,total_price
+                              valueCopyFields: ""
+                              onlyVisibleWithResults: false
+                              displayCard: true
+                              withBigMargin: true
+                              addButton: true
+                              md: 3
+                              hoverable: true
+                              key: invoice
+                        - type: AnimationItem
+                          id: khm19xvg
+                          items:
+                            - type: Paper
+                              id: khm1bxoe
+                              items:
+                                - type: Attachments
+                                  id: khm1a0x4
+                                  key: invoice
+                                  title: Sales
+                                  hoverable: true
+                                  withBigMargin: true
+                                  field: order
+                                  object: crm-sales
+                                  displayfields: product,amount,total_price
+                                  addButton: true
+                              title: Invoices
+                              hoverable: false
+                              withBigMargin: true
+                              field: order
+                              object: crm-sales
+                              displayfields: product,amount,total_price
+                              addButton: true
+                              key: invoice
+                              displayCard: true
+          buttons:
+            - document_generator-configure
+          factsBar:
+            - name
+            - person
+            - total
+            - paid
+        create:
+          layout:
+            - type: Field
+              id: khmiln1k
+              field: person
+            - type: Field
+              id: khmilo4v
+              field: paid
+            - type: Field
+              id: khnukmu7
+              field: date
+              key: date
+              name: Date
+          buttons: []
+      fields:
+        name:
+          name: Name
+          type: auto_name
+          typeArgs:
+            prefix: ORDER
+            mode: increment
+        person:
+          name: Person
+          type: relationship
+          typeArgs:
+            relationshipTo: people
+          required: true
+        paid:
+          name: Paid
+          type: boolean
+          default: "true"
+        date:
+          name: Date
+          type: date
+        total:
+          name: Total
+          type: formula
+          typeArgs:
+            type: number
+            formula:
+              '{{ sum_of_fields(''crm-sales'', ''total_price'', [{"field":"order","operator":"equals","value":
+              "__thisId"}]) }}'
+      app: crm
+      handlers:
+        crm: "/crm/orders/{object:_id}"
+      extensions:
+        document_generator:
+          name: Document generator
+          active: true
+      lists:
+        paid:
+          name: Paid
+          filter:
+            - key: paid
+              operator: equals
+              value: true
+        unpaid:
+          name: Unpaid
+          filter:
+            - key: paid
+              operator: equals
+              value: false
+
+  objects:
+    - _id:
+        "$oid": 5ec2f69d202d1f0218760cfd
+      data:
+        model: crm-orders
+        name: Invoice
+        filename-prefix: invoice
+        template:
+          "<style>\nbody,html{\nfont-size: 13px;\n}\ntable, th, td {\n  border:
+          1px solid black;\n}\n\ntd{\npadding: 10px;\ntext-align: center;\n}\n\ntable{\n
+          \ border-collapse: collapse;\nmargin: 15px;\n}\n\ntd:empty {\n  visibility:hidden;\n}\ntd:blank
+          {\n  visibility:hidden;\n}\n\n#pageHeader{\n  font-size: 26px;\n  font-weight:
+          bold;\n  text-align: center;\n  margin-top: 35px;\n}\n\n#pageFooter{\n  text-align:
+          center;\n  font-style: italic;  \n  margin-top: 35px;\n}\n</style>\n\n<div id=\"pageHeader\">Invoice
+          for {{ person_r.first_name }}</div>\n\n<p style=\"margin: 15px;\">Please wire
+          the indicated amount ({{ currency_format(total, \"nl-NL\", \"EUR\") }}) to IBAN
+          NL46ABNA2098811624 before {{ date_format(date, 'dd-MM-yyyy') }}. We will dispatch
+          your order directly after.</p>\n\n<table>\n<thead>\n<tr>\n<td style=\"width: 50%;text-align:
+          left;\">Product</td>\n<td>Price</td>\n<td>Amount</td>\n<td>Total price</td>\n</tr>\n</thead>\n<tbody>\n{{
+          forEach({\"objectId\": \"crm-sales\", \"data.order\": \"__thisId\"}, <tr><td style=\"width:
+          50%;text-align: left;\">[[product_r.name ]]<br />[[product_r.description ]]</td><td>[[price]]</td><td>[[amount]]</td><td>[[total_price]]</td></tr>)
+          }}\n<tr>\n    <td></td>\n    <td></td> \n    <td style=\"font-weight:bold;\">Total
+          price</td> \n    <td>{{ currency_format(total, \"nl-NL\", \"EUR\") }}</td> \n</tr>\n</tbody>\n</table>\n\n<div
+          id=\"pageFooter\">{{ name }} - {{ date_format(date, 'dd-MM-yyyy') }}</div>"
+      objectId: document-template
