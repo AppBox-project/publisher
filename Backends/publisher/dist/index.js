@@ -60,21 +60,39 @@ database.isReady.then(function () { return __awaiter(void 0, void 0, void 0, fun
                 tmp = "/AppBox/System/Temp/Sites/" + site.data.key;
                 // -->Step 1: Get the source
                 // Clone
-                shell.exec("git clone " + design.data.repository + " " + tmp);
+                return [4 /*yield*/, shell.exec("git clone " + design.data.repository + " " + tmp)];
+            case 3:
+                // -->Step 1: Get the source
+                // Clone
+                _a.sent();
                 // Install
-                shell.exec("yarn install --cwd " + tmp);
+                return [4 /*yield*/, shell.exec("yarn install --cwd " + tmp)];
+            case 4:
+                // Install
+                _a.sent();
                 // --> Step 2: Insert data
                 // --> Step 3: compile website.
-                shell.exec("yarn --cwd " + tmp + " gatsby build");
+                return [4 /*yield*/, shell.exec("yarn --cwd " + tmp + " gatsby clean")];
+            case 5:
+                // --> Step 2: Insert data
+                // --> Step 3: compile website.
+                _a.sent();
+                return [4 /*yield*/, shell.exec("yarn --cwd " + tmp + " gatsby build")];
+            case 6:
+                _a.sent();
                 console.log("Site succesfully built!");
-                shell.exec("mkdir -p " + dst);
-                shell.exec("cp -r " + tmp + "/public/* " + dst);
+                return [4 /*yield*/, shell.exec("mkdir -p " + dst)];
+            case 7:
+                _a.sent();
+                return [4 /*yield*/, shell.exec("cp -r " + tmp + "/public/* " + dst)];
+            case 8:
+                _a.sent();
                 return [4 /*yield*/, database.getSystemSettingByKey("hosted_apps")];
-            case 3:
+            case 9:
                 setting = _a.sent();
-                if (!setting) return [3 /*break*/, 4];
-                return [3 /*break*/, 6];
-            case 4: 
+                if (!setting) return [3 /*break*/, 10];
+                return [3 /*break*/, 12];
+            case 10: 
             // Create setting
             return [4 /*yield*/, database.createSystemSetting({
                     key: "hosted_apps",
@@ -85,11 +103,11 @@ database.isReady.then(function () { return __awaiter(void 0, void 0, void 0, fun
                         },
                     ],
                 })];
-            case 5:
+            case 11:
                 // Create setting
                 _a.sent();
-                _a.label = 6;
-            case 6:
+                _a.label = 12;
+            case 12:
                 // Done!
                 process.exit(0);
                 return [2 /*return*/];
