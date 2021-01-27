@@ -419,8 +419,7 @@ data:
             asBanner: true
 
   objects:
-    - _id:
-        "$oid": 5fda1ee6526f200804d77226
+    - _id: 5fda1ee6526f200804d77226
       data:
         name: Portfolio
         key: sample-portfolio
