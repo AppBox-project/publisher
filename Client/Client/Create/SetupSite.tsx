@@ -1,4 +1,11 @@
-import { Button, Divider, Grid, Typography } from "@material-ui/core";
+import {
+  Button,
+  Divider,
+  Fab,
+  Grid,
+  Tooltip,
+  Typography,
+} from "@material-ui/core";
 import React from "react";
 import { useState } from "reactn";
 import InputColor from "../../../Components/Inputs/Color";
@@ -6,6 +13,7 @@ import InputInput from "../../../Components/Inputs/Input";
 import { AppContextType } from "../../../Utils/Types";
 import { PublisherDesignType, PublisherSiteTypeData } from "../Types";
 import { map, find } from "lodash";
+import { FaThumbsUp } from "react-icons/fa";
 
 const PublisherSetupSite: React.FC<{
   context: AppContextType;
@@ -16,6 +24,7 @@ const PublisherSetupSite: React.FC<{
     name: "",
     key: "",
     data: {},
+    url: "",
     configuration: {},
     design: design._id,
     menus: {},
@@ -42,6 +51,13 @@ const PublisherSetupSite: React.FC<{
                 value={newSite.key}
                 onChange={(key: string) => {
                   setNewSite({ ...newSite, key });
+                }}
+              />
+              <InputInput
+                label="URL"
+                value={newSite.url}
+                onChange={(url: string) => {
+                  setNewSite({ ...newSite, url });
                 }}
               />
               {design.data.configuration.map((field) => (
@@ -135,42 +151,41 @@ const PublisherSetupSite: React.FC<{
             </context.UI.Animations.AnimationItem>
           </Grid>
         ))}
-        <Grid item xs={12}>
-          <Button
-            fullWidth
-            color="primary"
-            variant="contained"
-            onClick={() => {
-              const addModelPromises = [];
-              map(newSite.data, (value, key) => {
-                if (value?.mode === "standard") {
-                  addModelPromises.push(
-                    new Promise<void>((resolve) => {
-                      context.createModel(
-                        find(design.data.content, (o) => o.key === key)
-                          .standardModel,
-                        () => resolve()
-                      );
-                    })
-                  );
+      </Grid>
+      <Tooltip placement="left" title="Create website!">
+        <Fab
+          style={{ position: "fixed", bottom: 15, right: 15 }}
+          color="primary"
+          onClick={() => {
+            const addModelPromises = [];
+            map(newSite.data, (value, key) => {
+              if (value?.mode === "standard") {
+                addModelPromises.push(
+                  new Promise<void>((resolve) => {
+                    context.createModel(
+                      find(design.data.content, (o) => o.key === key)
+                        .standardModel,
+                      () => resolve()
+                    );
+                  })
+                );
+              }
+            });
+
+            Promise.all(addModelPromises).then(() => {
+              context.addObject("publisher-sites", newSite, (response) => {
+                if (response.success) {
+                  window.location.reload();
+                } else {
+                  console.log(response);
                 }
               });
-
-              Promise.all(addModelPromises).then(() => {
-                context.addObject("publisher-sites", newSite, (response) => {
-                  if (response.success) {
-                    window.location.reload();
-                  } else {
-                    console.log(response);
-                  }
-                });
-              });
-            }}
-          >
-            Create
-          </Button>
-        </Grid>
-      </Grid>
+            });
+          }}
+        >
+          <FaThumbsUp />
+        </Fab>
+      </Tooltip>
     </context.UI.Animations.AnimationContainer>
   );
 };

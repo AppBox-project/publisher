@@ -11,6 +11,7 @@ export interface PublisherSiteTypeData {
   configuration: {};
   design: string;
   menus: { [key: string]: { label: string; to: string }[] };
+  url: string;
 }
 
 export interface PublisherDesignType extends ObjectType {
