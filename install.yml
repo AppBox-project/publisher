@@ -8,6 +8,8 @@ script:
     model: publisher-sites
   - action: createModel
     model: publisher-designs
+  - action: createModel
+    model: publisher-pages
   - insertObjects
   - compile
   - action: registerApp
@@ -300,6 +302,122 @@ data:
           type: input
           typeArgs:
             type: url
+    publisher-pages:
+      preview:
+        fields: []
+      permissions:
+        read:
+          - known
+        create:
+          - known
+        modifyOwn:
+          - known
+        write:
+          - known
+        delete:
+          - known
+        deleteOwn:
+          - known
+        archive:
+          - known
+        archiveOwn:
+          - known
+      key: publisher-pages
+      name: Page
+      name_plural: Pages
+      actions:
+        create:
+          layout: create
+          type: create
+      overviews:
+        default:
+          fields:
+            - image
+            - name
+            - slug
+          buttons:
+            - create
+          actions:
+            - delete
+      layouts:
+        default:
+          layout:
+            - type: AnimationContainer
+              xs: 12
+              id: kf2r51ws
+              items:
+                - type: AnimationItem
+                  xs: 12
+                  id: kf2r5375
+                  items:
+                    - type: Paper
+                      xs: 12
+                      id: kf2r56lv
+                      title: Page
+                      withBigMargin: true
+                      key: default
+                      items:
+                        - type: Field
+                          id: kkfhxold
+                          field: site
+                        - type: Field
+                          id: kkfhxq43
+                          field: name
+                        - type: Field
+                          id: kkfhxrd7
+                          field: slug
+                        - type: Field
+                          id: kkfhxsnf
+                          field: content
+                        - type: Field
+                          id: kkfhxtzn
+                          field: image
+          buttons: []
+        create:
+          layout:
+            - type: Field
+              id: kkfhwznd
+              field: site
+            - type: Field
+              id: kkfhx3u7
+              field: name
+              hideView: false
+            - type: Field
+              id: kkfhx8a9
+              field: slug
+            - type: Field
+              id: kkfhxbpl
+              field: content
+          buttons: []
+      app: publisher
+      icon: FaFile
+      primary: name
+      fields:
+        name:
+          name: Name
+          type: input
+          typeArgs:
+            type: text
+        slug:
+          name: Slug
+          type: input
+          typeArgs:
+            type: text
+        site:
+          name: Site
+          type: relationship
+          typeArgs:
+            relationshipTo: publisher-sites
+          required: true
+        content:
+          name: Content
+          type: richtext
+        image:
+          name: Image
+          type: picture
+          typeArgs:
+            asBanner: true
+
   objects:
     - _id:
         "$oid": 5fda1ee6526f200804d77226
