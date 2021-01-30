@@ -372,6 +372,9 @@ data:
                         - type: Field
                           id: kkfhxtzn
                           field: image
+                        - type: Field
+                          id: kkqhxtzn
+                          field: data
           buttons: []
         create:
           layout:
@@ -417,7 +420,11 @@ data:
           type: picture
           typeArgs:
             asBanner: true
-
+        data:
+          name: Data
+          type: input
+          typeArgs:
+            type: text
   objects:
     - _id: 5fda1ee6526f200804d77226
       data:
@@ -425,224 +432,222 @@ data:
         key: sample-portfolio
         version: "1"
         content:
-          - key: portfolio-items
-            icon: FaPaintBrush
-            name: Portfolio items
-            description: The core of any good portfolio site is what you\'ve created.
-            allowCustom: true
-            customMapping:
-              - {}
-            standardModel:
-              preview:
-                fields: []
-              permissions:
-                read:
-                  - known
-                create:
-                  - known
-                modifyOwn:
-                  - known
-                write:
-                  - known
-                delete:
-                  - known
-                deleteOwn:
-                  - known
-                archive:
-                  - known
-                archiveOwn:
-                  - known
-              key: publisher-portfolio-items
-              name: Portfolio item
-              name_plural: Portfolio items
-              actions:
-                create:
-                  layout: create
-                  type: create
-              overviews:
-                default:
-                  fields:
-                    - name
-                    - image
-                    - description
-                  buttons:
-                    - create
-                  actions:
-                    - delete
-              layouts:
-                default:
-                  layout:
-                    - type: AnimationContainer
-                      xs: 12
-                      id: kf2r51ws
-                      items:
-                        - type: AnimationItem
-                          xs: 12
-                          id: kf2r5375
-                          items:
-                            - type: Paper
-                              xs: 12
-                              id: kf2r56lv
-                              title: Portfolio item
-                              withBigMargin: true
-                              key: default
-                              items:
-                                - type: Field
-                                  id: kkcozf8p
-                                  field: name
-                                - type: Field
-                                  id: kkcozgmc
-                                  field: site
-                                - type: Field
-                                  id: kkcozj0y
-                                  field: image
-                                - type: Field
-                                  id: kkcozkoy
-                                  field: description
-                  buttons: []
-                create:
-                  layout:
-                    - type: Field
-                      id: kkcozwk2
-                      field: site
-                    - type: Field
-                      id: kkcozxng
-                      field: name
-                    - type: Field
-                      id: kkcozyy0
-                      field: description
-                  buttons: []
-              app: publisher
-              icon: FaPaintBrush
-              primary: name
-              fields:
-                name:
-                  name: Name
-                  type: input
-                  typeArgs:
-                    type: text
-                site:
-                  name: Site
-                  type: relationship
-                  typeArgs:
-                    relationshipTo: publisher-sites
-                image:
-                  name: Image
-                  type: picture
-                  typeArgs:
-                    asBanner: true
-                description:
-                  name: Description
-                  type: richtext
-          - icon: FaNewspaper
-            key: blog-posts
-            name: Blog posts
-            description: "Update people about the latest news. "
-            allowCustom: true
-            customMapping:
-              - {}
-            standardModel:
-              preview:
-                fields: []
-              permissions:
-                read:
-                  - known
-                create:
-                  - known
-                modifyOwn:
-                  - known
-                write:
-                  - known
-                delete:
-                  - known
-                deleteOwn:
-                  - known
-                archive:
-                  - known
-                archiveOwn:
-                  - known
-              key: publisher-portfolio-blog-posts
-              name: Blog post
-              name_plural: Blog posts
-              actions:
-                create:
-                  layout: create
-                  type: create
-              overviews:
-                default:
-                  fields:
-                    - name
-                    - site
-                    - description
-                  buttons:
-                    - create
-                  actions:
-                    - delete
-              layouts:
-                default:
-                  layout:
-                    - type: AnimationContainer
-                      xs: 12
-                      id: kf2r51ws
-                      items:
-                        - type: AnimationItem
-                          xs: 12
-                          id: kf2r5375
-                          items:
-                            - type: Paper
-                              xs: 12
-                              id: kf2r56lv
-                              title: Blog post
-                              withBigMargin: true
-                              key: default
-                              items:
-                                - type: Field
-                                  id: kkcoxf5s
-                                  field: name
-                                - type: Field
-                                  id: kkcoxgw9
-                                  field: site
-                                - type: Field
-                                  id: kkcoxipi
-                                  field: image
-                                - type: Field
-                                  id: kkcoxkbo
-                                  field: description
-                  buttons: []
-                create:
-                  layout:
-                    - type: Field
-                      id: kkcoxy3d
-                      field: site
-                    - type: Field
-                      id: kkcoxz0i
-                      field: name
-                    - type: Field
-                      id: kkcoy0ga
-                      field: description
-                  buttons: []
-              app: publisher
-              icon: FaNewspaper
-              primary: name
-              fields:
-                name:
-                  name: Name
-                  type: input
-                  typeArgs:
-                    type: text
-                site:
-                  name: Site
-                  type: relationship
-                  typeArgs:
-                    relationshipTo: publisher-sites
-                image:
-                  name: Image
-                  type: picture
-                  typeArgs:
-                    asBanner: true
-                description:
-                  name: Description
-                  type: richtext
+  - key: portfolio-items
+    icon: FaPaintBrush
+    name: Portfolio items
+    description: The core of any good portfolio site is what you've created.
+    allowCustom: true
+    customMapping:
+    - {}
+    standardModel:
+      preview:
+        fields: []
+      permissions:
+        read:
+        - known
+        create:
+        - known
+        modifyOwn:
+        - known
+        write:
+        - known
+        delete:
+        - known
+        deleteOwn:
+        - known
+        archive:
+        - known
+        archiveOwn:
+        - known
+      key: publisher-portfolio-items
+      name: Portfolio item
+      name_plural: Portfolio items
+      actions:
+        create:
+          layout: default
+          type: create
+      overviews:
+        default:
+          fields: []
+          buttons:
+          - create
+          actions:
+          - delete
+      layouts:
+        default:
+          layout:
+          - type: AnimationContainer
+            xs: 12
+            id: kf2r51ws
+            items:
+            - type: AnimationItem
+              xs: 12
+              id: kf2r5375
+              items:
+              - type: Paper
+                xs: 12
+                id: kf2r56lv
+                title: Portfolio item
+                withBigMargin: true
+                key: default
+                items:
+                - type: Field
+                  id: kkjktncz
+                  field: site
+                - type: Field
+                  id: kkjktrk0
+                  field: name
+                - type: Field
+                  id: kkjktt3a
+                  field: description
+                - type: Field
+                  id: kkjktuhl
+                  field: image
+          buttons: []
+        create:
+          layout:
+          - type: Field
+            id: kkjku57o
+            field: site
+          - type: Field
+            id: kkjku639
+            field: name
+          - type: Field
+            id: kkjku6ve
+            field: description
+            hideView: false
+          buttons: []
+      app: publisher
+      icon: FaPaintBrush
+      primary: name
+      fields:
+        name:
+          name: Name
+          type: input
+          typeArgs:
+            type: text
+        site:
+          name: Site
+          type: relationship
+          typeArgs:
+            relationshipTo: publisher-sites
+        image:
+          name: Image
+          type: picture
+          typeArgs:
+            asBanner: true
+        description:
+          name: Description
+          type: richtext
+  - icon: FaNewspaper
+    key: blog-posts
+    name: Blog posts
+    description: 'Update people about the latest news. '
+    allowCustom: true
+    customMapping:
+    - {}
+    standardModel:
+      preview:
+        fields: []
+      permissions:
+        read:
+        - known
+        create:
+        - known
+        modifyOwn:
+        - known
+        write:
+        - known
+        delete:
+        - known
+        deleteOwn:
+        - known
+        archive:
+        - known
+        archiveOwn:
+        - known
+      key: publisher-portfolio-blog-posts
+      name: Blog post
+      name_plural: Blog posts
+      actions:
+        create:
+          layout: create
+          type: create
+      overviews:
+        default:
+          fields:
+          - name
+          - site
+          - description
+          buttons:
+          - create
+          actions:
+          - delete
+      layouts:
+        default:
+          layout:
+          - type: AnimationContainer
+            xs: 12
+            id: kf2r51ws
+            items:
+            - type: AnimationItem
+              xs: 12
+              id: kf2r5375
+              items:
+              - type: Paper
+                xs: 12
+                id: kf2r56lv
+                title: Blog post
+                withBigMargin: true
+                key: default
+                items:
+                - type: Field
+                  id: kkcoxf5s
+                  field: name
+                - type: Field
+                  id: kkcoxgw9
+                  field: site
+                - type: Field
+                  id: kkcoxipi
+                  field: image
+                - type: Field
+                  id: kkcoxkbo
+                  field: description
+          buttons: []
+        create:
+          layout:
+          - type: Field
+            id: kkcoxy3d
+            field: site
+          - type: Field
+            id: kkcoxz0i
+            field: name
+          - type: Field
+            id: kkcoy0ga
+            field: description
+          buttons: []
+      app: publisher
+      icon: FaNewspaper
+      primary: name
+      fields:
+        name:
+          name: Name
+          type: input
+          typeArgs:
+            type: text
+        site:
+          name: Site
+          type: relationship
+          typeArgs:
+            relationshipTo: publisher-sites
+        image:
+          name: Image
+          type: picture
+          typeArgs:
+            asBanner: true
+        description:
+          name: Description
+          type: richtext
         description: Showcase your work in this appealing portfolio theme.
         configuration:
           - label: Primary color
