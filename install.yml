@@ -221,7 +221,7 @@ data:
                           field: name
                         - type: Field
                           id: kirlj5t4
-                          field: description
+                          field: content
                         - type: Field
                           id: kiq1m1fz
                           field: version
@@ -248,7 +248,7 @@ data:
               field: name
             - type: Field
               id: kirlk4sk
-              field: description
+              field: content
             - type: Field
               id: kiq1m7tg
               field: version
@@ -286,8 +286,8 @@ data:
         content:
           name: Content
           type: data
-        description:
-          name: Description
+        content:
+          name: Content
           type: input
           typeArgs:
             type: text
@@ -435,7 +435,7 @@ data:
   - key: portfolio-items
     icon: FaPaintBrush
     name: Portfolio items
-    description: The core of any good portfolio site is what you've created.
+    description: The core of any good portfolio site is showing off what you have made.
     allowCustom: true
     customMapping:
     - {}
@@ -464,7 +464,7 @@ data:
       name_plural: Portfolio items
       actions:
         create:
-          layout: default
+          layout: create
           type: create
       overviews:
         default:
@@ -499,7 +499,7 @@ data:
                   field: name
                 - type: Field
                   id: kkjktt3a
-                  field: description
+                  field: content
                 - type: Field
                   id: kkjktuhl
                   field: image
@@ -514,7 +514,7 @@ data:
             field: name
           - type: Field
             id: kkjku6ve
-            field: description
+            field: content
             hideView: false
           buttons: []
       app: publisher
@@ -536,13 +536,13 @@ data:
           type: picture
           typeArgs:
             asBanner: true
-        description:
-          name: Description
+        content:
+          name: content
           type: richtext
   - icon: FaNewspaper
     key: blog-posts
     name: Blog posts
-    description: 'Update people about the latest news. '
+    description: 'Update visitors about the latest news. '
     allowCustom: true
     customMapping:
     - {}
@@ -576,9 +576,9 @@ data:
       overviews:
         default:
           fields:
+          - image
           - name
           - site
-          - description
           buttons:
           - create
           actions:
@@ -612,7 +612,7 @@ data:
                   field: image
                 - type: Field
                   id: kkcoxkbo
-                  field: description
+                  field: content
           buttons: []
         create:
           layout:
@@ -624,7 +624,7 @@ data:
             field: name
           - type: Field
             id: kkcoy0ga
-            field: description
+            field: content
           buttons: []
       app: publisher
       icon: FaNewspaper
@@ -645,8 +645,8 @@ data:
           type: picture
           typeArgs:
             asBanner: true
-        description:
-          name: Description
+        content:
+          name: Content
           type: richtext
         description: Showcase your work in this appealing portfolio theme.
         configuration:
