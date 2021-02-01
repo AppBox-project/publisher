@@ -38,7 +38,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var appbox_backend_tools_1 = require("./appbox-backend-tools");
 var Database_1 = require("./appbox-backend-tools/Database");
+var Utils_1 = require("./appbox-backend-tools/Utils");
 var shell = require("shelljs");
+var TurndownService = require("turndown");
+var turndownService = new TurndownService({ headingStyle: "atx" });
+var fs = require("fs");
 // Get arguments
 var _a = appbox_backend_tools_1.extractArguments([
     { key: "connectionString", required: true },
@@ -47,7 +51,7 @@ var _a = appbox_backend_tools_1.extractArguments([
 // Create a database connection
 var database = new Database_1.default(connectionString);
 database.isReady.then(function () { return __awaiter(void 0, void 0, void 0, function () {
-    var site, design, dst, tmp, setting;
+    var site, design, dst, tmp, data, pages, newPages, siteData, setting;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, database.getObjectById(siteId)];
@@ -70,29 +74,144 @@ database.isReady.then(function () { return __awaiter(void 0, void 0, void 0, fun
             case 4:
                 // Install
                 _a.sent();
-                // --> Step 2: Insert data
+                data = {};
+                //@ts-ignore
+                return [4 /*yield*/, Object.keys(site.data.data).reduce(function (prev, curr) { return __awaiter(void 0, void 0, void 0, function () {
+                        var newData, objects;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0: return [4 /*yield*/, prev];
+                                case 1:
+                                    _a.sent();
+                                    newData = [];
+                                    return [4 /*yield*/, database.getObjects({
+                                            objectId: site.data.data[curr].model,
+                                            "data.site": "" + site._id,
+                                        })];
+                                case 2:
+                                    objects = _a.sent();
+                                    //@ts-ignore
+                                    return [4 /*yield*/, objects.reduce(function (prevObject, currObject) {
+                                            newData.push({
+                                                slug: Utils_1.slugify(currObject.data.name),
+                                                image: currObject.data.image,
+                                                content: "---\ntitle: " + currObject.data.name + "\nmodel: " + curr + "\nhero: hero.jpg\n" + (currObject.data.data
+                                                    ? "data:\n" + (currObject.data.data || "").split(",").map(function (data) { return "- " + data; })
+                                                    : "") + "\n---\n" + turndownService.turndown(currObject.data.content),
+                                            });
+                                        }, objects[0])];
+                                case 3:
+                                    //@ts-ignore
+                                    _a.sent();
+                                    data[curr] = newData;
+                                    return [2 /*return*/, curr];
+                            }
+                        });
+                    }); }, Object.keys(site.data.data)[0])];
+            case 5:
+                //@ts-ignore
+                _a.sent();
+                return [4 /*yield*/, database.getObjects({
+                        objectId: "publisher-pages",
+                        "data.site": "" + site._id,
+                    })];
+            case 6:
+                pages = _a.sent();
+                newPages = [];
+                //@ts-ignore
+                return [4 /*yield*/, pages.reduce(function (prevPage, currPage) { return __awaiter(void 0, void 0, void 0, function () {
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0: return [4 /*yield*/, prevPage];
+                                case 1:
+                                    _a.sent();
+                                    newPages.push({
+                                        slug: currPage.data.slug,
+                                        image: currPage.data.image,
+                                        content: "---\ntitle: " + currPage.data.name + "\nmodel: pages\nhero: hero.jpg\n" + (currPage.data.data
+                                            ? "data:\n" + (currPage.data.data || "").split(",").map(function (data) { return "- " + data; })
+                                            : "") + "\n---\n" + turndownService.turndown(currPage.data.content),
+                                    });
+                                    return [2 /*return*/, currPage];
+                            }
+                        });
+                    }); }, pages[0])];
+            case 7:
+                //@ts-ignore
+                _a.sent();
+                data["pages"] = newPages;
+                siteData = {
+                    title: site.data.name,
+                    menus: site.data.menus,
+                    footer: { active: true, text: site.data.configuration["footer-text"] },
+                };
+                fs.writeFileSync(tmp + "/siteData.json", JSON.stringify(siteData));
+                // Write out data
+                return [4 /*yield*/, shell.exec("mkdir " + tmp + "/src/data")];
+            case 8:
+                // Write out data
+                _a.sent();
+                //@ts-ignore
+                return [4 /*yield*/, Object.keys(data).reduce(function (prevObjKey, currObjKey) { return __awaiter(void 0, void 0, void 0, function () {
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0: return [4 /*yield*/, prevObjKey];
+                                case 1:
+                                    _a.sent();
+                                    // Make folder
+                                    return [4 /*yield*/, shell.exec("mkdir " + tmp + "/src/data/" + currObjKey)];
+                                case 2:
+                                    // Make folder
+                                    _a.sent();
+                                    return [4 /*yield*/, data[currObjKey].reduce(function (prevObject, currObject) { return __awaiter(void 0, void 0, void 0, function () {
+                                            var imageLoc;
+                                            return __generator(this, function (_a) {
+                                                switch (_a.label) {
+                                                    case 0: return [4 /*yield*/, prevObject];
+                                                    case 1:
+                                                        _a.sent();
+                                                        return [4 /*yield*/, shell.exec("mkdir " + tmp + "/src/data/" + currObjKey + "/" + currObject.slug)];
+                                                    case 2:
+                                                        _a.sent();
+                                                        imageLoc = currObject.image.split("/");
+                                                        return [4 /*yield*/, shell.exec("cp /AppBox/Files/Objects/" + imageLoc[2] + "/" + imageLoc[3] + "/" + imageLoc[4] + " " + tmp + "/src/data/" + currObjKey + "/" + currObject.slug + "/hero.jpg")];
+                                                    case 3:
+                                                        _a.sent();
+                                                        fs.writeFileSync(tmp + "/src/data/" + currObjKey + "/" + currObject.slug + "/index.md", currObject.content);
+                                                        return [2 /*return*/, currObject];
+                                                }
+                                            });
+                                        }); }, data[currObjKey][0])];
+                                case 3:
+                                    _a.sent();
+                                    return [2 /*return*/, currObjKey];
+                            }
+                        });
+                    }); }, Object.keys(data)[0])];
+            case 9:
+                //@ts-ignore
+                _a.sent();
                 // --> Step 3: compile website.
                 return [4 /*yield*/, shell.exec("yarn --cwd " + tmp + " gatsby clean")];
-            case 5:
-                // --> Step 2: Insert data
+            case 10:
                 // --> Step 3: compile website.
                 _a.sent();
                 return [4 /*yield*/, shell.exec("yarn --cwd " + tmp + " gatsby build")];
-            case 6:
+            case 11:
                 _a.sent();
-                console.log("Site succesfully built!");
+                console.log("Site compiled!");
                 return [4 /*yield*/, shell.exec("mkdir -p " + dst)];
-            case 7:
+            case 12:
                 _a.sent();
                 return [4 /*yield*/, shell.exec("cp -r " + tmp + "/public/* " + dst)];
-            case 8:
+            case 13:
                 _a.sent();
                 return [4 /*yield*/, database.getSystemSettingByKey("hosted_apps")];
-            case 9:
+            case 14:
                 setting = _a.sent();
-                if (!setting) return [3 /*break*/, 10];
-                return [3 /*break*/, 12];
-            case 10: 
+                if (!setting) return [3 /*break*/, 15];
+                return [3 /*break*/, 17];
+            case 15: 
             // Create setting
             return [4 /*yield*/, database.createSystemSetting({
                     key: "hosted_apps",
@@ -103,12 +222,13 @@ database.isReady.then(function () { return __awaiter(void 0, void 0, void 0, fun
                         },
                     ],
                 })];
-            case 11:
+            case 16:
                 // Create setting
                 _a.sent();
-                _a.label = 12;
-            case 12:
+                _a.label = 17;
+            case 17:
                 // Done!
+                console.log("Site registered with App-Server.");
                 process.exit(0);
                 return [2 /*return*/];
         }

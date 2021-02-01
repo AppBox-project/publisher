@@ -2,6 +2,7 @@
   "author": "Vic van Cooten",
   "name": "publisher-backend",
   "description": "Backend script for publisher",
+  "license": "MIT",
   "devDependencies": {
     "@types/node": "^14.14.22",
     "prettier": "^2.2.1",

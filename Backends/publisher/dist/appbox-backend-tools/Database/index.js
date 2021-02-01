@@ -59,6 +59,22 @@ var Database = /** @class */ (function () {
                 });
             }); });
         };
+        // By filter
+        this.getObjects = function (filter) {
+            return new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
+                var _a;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            _a = resolve;
+                            return [4 /*yield*/, this.models.objects.model.find(filter)];
+                        case 1:
+                            _a.apply(void 0, [_b.sent()]);
+                            return [2 /*return*/];
+                    }
+                });
+            }); });
+        };
         //--> System settings
         // Updates part of an object
         this.getSystemSettingByKey = function (key) {
